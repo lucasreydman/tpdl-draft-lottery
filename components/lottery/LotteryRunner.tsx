@@ -7,6 +7,7 @@ import { buildTeams } from '@/lib/league';
 import type { LotteryResult, DrawResult } from '@/lib/lottery/types';
 import OddsTable from './OddsTable';
 import RevealPlayer from '@/components/reveal/RevealPlayer';
+import ShareButton from '@/components/shared/ShareButton';
 
 const LS_NAMES = 'tpdl.teamNames';
 const LS_OWNERSHIP = 'tpdl.pickOwnership';
@@ -75,12 +76,7 @@ export default function LotteryRunner() {
         {!isLocal && (
           <>
             <a href={url} className="underline">{url}</a>
-            <button
-              className="ml-4 px-3 py-1 bg-neutral-800 rounded"
-              onClick={() => navigator.clipboard.writeText(window.location.origin + url)}
-            >
-              Copy link
-            </button>
+            <ShareButton url={`${window.location.origin}${url}`} />
           </>
         )}
       </div>
