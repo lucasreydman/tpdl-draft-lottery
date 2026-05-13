@@ -1,7 +1,7 @@
 // components/lottery/LotteryRunner.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { runDraw } from '@/lib/lottery/draw';
 import { buildTeams } from '@/lib/league';
 import type { LotteryResult, DrawResult } from '@/lib/lottery/types';
@@ -13,22 +13,25 @@ const LS_NAMES = 'tpdl.teamNames';
 const LS_OWNERSHIP = 'tpdl.pickOwnership';
 
 export default function LotteryRunner() {
-  const [names, setNames] = useState<string[]>(Array(10).fill(''));
-  const [ownership, setOwnership] = useState<string[][]>([[], [], []]);
+  const [names] = useState<string[]>(() => {
+    try {
+      const n = localStorage.getItem(LS_NAMES);
+      return n ? (JSON.parse(n) as string[]) : Array(10).fill('');
+    } catch {
+      return Array(10).fill('');
+    }
+  });
+  const [ownership] = useState<string[][]>(() => {
+    try {
+      const o = localStorage.getItem(LS_OWNERSHIP);
+      return o ? (JSON.parse(o) as string[][]) : [[], [], []];
+    } catch {
+      return [[], [], []];
+    }
+  });
   const [draw, setDraw] = useState<DrawResult | null>(null);
   const [saved, setSaved] = useState<LotteryResult | null>(null);
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    try {
-      const n = localStorage.getItem(LS_NAMES);
-      const o = localStorage.getItem(LS_OWNERSHIP);
-      if (n) setNames(JSON.parse(n));
-      if (o) setOwnership(JSON.parse(o));
-    } catch {
-      // localStorage unavailable or corrupt — keep defaults.
-    }
-  }, []);
 
   const ready = names.every(Boolean) && new Set(names).size === 10;
 

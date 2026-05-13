@@ -19,18 +19,30 @@ function safeParseJSON<T>(raw: string | null, fallback: T): T {
   }
 }
 
+function readNames(): string[] {
+  try {
+    return safeParseJSON<string[]>(localStorage.getItem(LS_NAMES), Array(10).fill(''));
+  } catch {
+    return Array(10).fill('');
+  }
+}
+
+function readOwnership(names: string[]): string[][] {
+  try {
+    return safeParseJSON<string[][]>(localStorage.getItem(LS_OWNERSHIP), blankOwnership(names));
+  } catch {
+    return blankOwnership(names);
+  }
+}
+
 export default function AdminPage() {
-  const [names, setNames] = useState<string[]>(Array(10).fill(''));
-  const [ownership, setOwnership] = useState<string[][]>(() => blankOwnership(Array(10).fill('')));
+  const [names, setNames] = useState<string[]>(() => readNames());
+  const [ownership, setOwnership] = useState<string[][]>(() => {
+    const n = readNames();
+    return readOwnership(n);
+  });
   const [teamsLocked, setTeamsLocked] = useState(false);
   const [ownLocked, setOwnLocked] = useState(false);
-
-  useEffect(() => {
-    const n = safeParseJSON<string[]>(localStorage.getItem(LS_NAMES), Array(10).fill(''));
-    const o = safeParseJSON<string[][]>(localStorage.getItem(LS_OWNERSHIP), blankOwnership(n));
-    setNames(n);
-    setOwnership(o);
-  }, []);
 
   useEffect(() => { localStorage.setItem(LS_NAMES, JSON.stringify(names)); }, [names]);
   useEffect(() => { localStorage.setItem(LS_OWNERSHIP, JSON.stringify(ownership)); }, [ownership]);
