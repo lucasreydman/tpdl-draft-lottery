@@ -1,5 +1,5 @@
 // lib/lottery/draw.ts
-import { drawOnePick, ASSIGNED, TOTAL_POOL } from './combinations';
+import { drawOnePick, TOTAL_POOL } from './combinations';
 import type { LotteryConfig, DrawResult, DrawEvent, RNG } from './types';
 
 export function runDraw(config: LotteryConfig, rng: RNG): DrawResult {
@@ -12,8 +12,8 @@ export function runDraw(config: LotteryConfig, rng: RNG): DrawResult {
   if (sum !== TOTAL_POOL) {
     throw new Error(`runDraw: combinations must sum to ${TOTAL_POOL}, got ${sum}`);
   }
-  if (lotteryEligible.length < 4) {
-    throw new Error(`runDraw: need at least 4 lottery-eligible teams, got ${lotteryEligible.length}`);
+  if (lotteryEligible.length < 6) {
+    throw new Error(`runDraw: need at least 6 lottery-eligible teams (4 for lottery + 2 for by-record), got ${lotteryEligible.length}`);
   }
 
   const drawn = new Set<number>();

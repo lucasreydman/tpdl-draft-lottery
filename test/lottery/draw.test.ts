@@ -59,12 +59,23 @@ describe('runDraw', () => {
     expect(() => runDraw({ teams: badTeams }, Math.random)).toThrow('1001');
   });
 
-  it('throws when fewer than 4 lottery-eligible teams', () => {
+  it('throws when fewer than 6 lottery-eligible teams (3 eligible)', () => {
     // 3 lottery-eligible teams summing to TOTAL_POOL (1001), but only 3 eligible
     const badTeams: TeamConfig[] = Array.from({ length: 5 }, (_, i) => ({
       name: `Team${i}`,
       originalIndex: i,
       combinations: [400, 400, 201, 0, 0][i], // sum = 1001 ✓, but only 3 eligible
+    }));
+    expect(() => runDraw({ teams: badTeams }, Math.random)).toThrow('lottery-eligible');
+  });
+
+  it('throws when fewer than 6 lottery-eligible teams (5 eligible — previously accepted, now rejected)', () => {
+    // 5 lottery-eligible teams summing to TOTAL_POOL (1001).
+    // The old < 4 guard would have passed this; the new < 6 guard must reject it.
+    const badTeams: TeamConfig[] = Array.from({ length: 7 }, (_, i) => ({
+      name: `Team${i}`,
+      originalIndex: i,
+      combinations: [300, 250, 200, 150, 101, 0, 0][i], // sum = 1001 ✓, 5 eligible
     }));
     expect(() => runDraw({ teams: badTeams }, Math.random)).toThrow('lottery-eligible');
   });
