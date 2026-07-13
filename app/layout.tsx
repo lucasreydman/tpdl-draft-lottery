@@ -1,19 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Big_Shoulders_Display, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import Nav from "@/components/shared/Nav";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const bigShoulders = Big_Shoulders_Display({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["600", "800", "900"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const hankenGrotesk = Hanken_Grotesk({
+  variable: "--font-body",
   subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
-const inter = Inter({ subsets: ["latin"] });
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["500"],
+});
 
 export const metadata: Metadata = {
   title: "TPDL Draft Lottery",
@@ -28,11 +34,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${bigShoulders.variable} ${hankenGrotesk.variable} ${jetbrainsMono.variable} h-full dark`}
     >
-      <body className={`min-h-full flex flex-col ${inter.className}`}>
+      <body className="min-h-full flex flex-col">
         <Nav />
-        <main>{children}</main>
+        <main className="flex-1">{children}</main>
       </body>
     </html>
   );
